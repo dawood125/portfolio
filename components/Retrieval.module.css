@@ -1,0 +1,45 @@
+.section {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  align-items: center;
+  overflow: hidden;
+}
+
+.inner {
+  display: grid;
+  gap: 22px;
+  padding-block: 12vh;
+}
+
+.meta {
+  font-size: 0.75rem;
+  color: var(--graphite);
+}
+
+.line {
+  max-width: 15ch;
+  font-size: clamp(2.75rem, 7.6vw, 8rem);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+.line :global(.retrieval-word) {
+  will-change: transform;
+}
+
+.rule {
+  display: block;
+  width: min(420px, 60%);
+  height: 2px;
+  background: var(--signal);
+  transform-origin: left;
+}
+:global(html[data-motion="reduced"]) .rule,
+:global(html[data-motion="lite"]) .rule {
+  transform: none;
+}
+
+.sign {
+  color: var(--graphite);
+}

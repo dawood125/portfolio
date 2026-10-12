@@ -13,9 +13,12 @@ export default function Header() {
         </a>
         <nav aria-label="Primary" className={s.nav}>
           <a href="#work">Work</a>
+          <a href="#inside">Inside</a>
           <a href="#ask">Ask</a>
-          <a href={profile.cv}>Résumé</a>
-          <a href={`mailto:${profile.email}?subject=Project%20enquiry`}>Hire</a>
+          <a href={profile.cv} target="_blank" rel="noopener">
+            Résumé
+          </a>
+          <a href="#contact">Contact</a>
         </nav>
         <div className={s.tools}>
           <MotionToggle className={s.toggle} />

@@ -1,0 +1,233 @@
+/* Ink section: we're "inside the box" here. */
+.section {
+  position: relative;
+  background: var(--ink);
+  color: var(--paper);
+  padding: clamp(96px, 15vh, 160px) 0;
+}
+
+.head {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: 14px;
+  align-items: end;
+  margin-bottom: clamp(40px, 7vh, 72px);
+}
+.kicker {
+  grid-column: 1 / -1;
+  font-size: 0.75rem;
+  color: var(--signal-ink);
+}
+.title {
+  grid-column: 1 / 7;
+  font-size: clamp(3rem, 7.4vw, 7.25rem);
+  font-weight: 600;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+}
+.title :global(.stream-caret) {
+  background: var(--signal-ink);
+}
+.intro {
+  grid-column: 7 / 11;
+  color: var(--fog);
+  max-width: 44ch;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  align-items: start;
+}
+
+/* ---------- the map ---------- */
+.map {
+  grid-column: 1 / 8;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 0.9fr;
+  gap: clamp(36px, 6vw, 96px);
+  padding: 28px 0;
+}
+.wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.edge {
+  fill: none;
+  stroke: #3a3d44;
+  stroke-width: 1.25;
+  transition: stroke var(--t-ui);
+}
+.edge[data-hot="true"] {
+  stroke: var(--signal-ink);
+}
+.packet {
+  fill: var(--signal-ink);
+  stroke: rgb(140 155 255 / 0.28);
+  stroke-width: 8;
+  paint-order: stroke;
+  visibility: hidden;
+}
+
+.lane {
+  position: relative;
+  display: grid;
+  align-content: center;
+  gap: 18px;
+}
+.laneLabel {
+  font-size: 0.6875rem;
+  color: #6f727a;
+  text-transform: lowercase;
+}
+
+.node {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  text-align: left;
+  padding: 16px 18px;
+  border: 1px solid var(--line-ink);
+  background: var(--ink-2);
+  color: var(--paper);
+  cursor: pointer;
+  transition: border-color var(--t-ui), background var(--t-ui), box-shadow var(--t-ui);
+}
+.node:hover {
+  border-color: #5a5e68;
+}
+.node[aria-pressed="true"] {
+  border-color: var(--paper);
+}
+.node[data-active="true"] {
+  border-color: var(--signal-ink);
+  box-shadow: 0 0 0 4px rgb(140 155 255 / 0.14), 0 0 40px rgb(140 155 255 / 0.12);
+}
+.nodeLabel {
+  font-size: clamp(1rem, 1.25vw, 1.1875rem);
+  font-weight: 560;
+  letter-spacing: -0.015em;
+}
+.nodeTech {
+  font-size: 0.6875rem;
+  color: var(--fog);
+}
+.node:focus-visible {
+  outline-color: var(--signal-ink);
+}
+
+/* ---------- side: steps + detail ---------- */
+.side {
+  grid-column: 8 / 11;
+  display: grid;
+  gap: 22px;
+  align-content: start;
+  padding-top: 28px;
+}
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.steps li {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 10px;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: #6f727a;
+  transition: color var(--t-ui);
+}
+.steps li :global(.mono) {
+  font-size: 0.75rem;
+  padding-top: 3px;
+}
+.steps li[data-state="done"] {
+  color: var(--fog);
+}
+.steps li[data-state="now"] {
+  color: var(--paper);
+}
+.steps li[data-state="now"] :global(.mono) {
+  color: var(--signal-ink);
+}
+.replay {
+  justify-self: start;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line-ink);
+  background: transparent;
+  color: var(--paper);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.replay:hover:not(:disabled) {
+  border-color: var(--signal-ink);
+  color: var(--signal-ink);
+}
+.replay:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.detail {
+  border-top: 1px solid var(--line-ink);
+  padding-top: 18px;
+  display: grid;
+  gap: 6px;
+}
+.detailTech {
+  font-size: 0.6875rem;
+  color: var(--signal-ink);
+}
+.detail h3 {
+  font-size: 1.375rem;
+  font-weight: 560;
+  letter-spacing: -0.02em;
+}
+.detail p:last-child {
+  color: var(--fog);
+  font-size: 0.9375rem;
+}
+
+@media (max-width: 1023px) {
+  .map {
+    grid-column: 1 / -1;
+  }
+  .side {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--gutter);
+  }
+  .detail {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 760px) {
+  .head {
+    grid-template-columns: 1fr;
+  }
+  .title,
+  .intro {
+    grid-column: 1 / -1;
+  }
+  .map {
+    grid-template-columns: 1fr;
+    gap: 44px;
+  }
+  .lane {
+    grid-template-columns: 1fr;
+  }
+  .side {
+    grid-template-columns: 1fr;
+  }
+}

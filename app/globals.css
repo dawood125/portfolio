@@ -213,17 +213,6 @@ button {
   vertical-align: -0.02em;
 }
 
-.prototype-foot {
-  padding: 40px 0 56px;
-  border-top: 1px solid var(--line);
-}
-.prototype-foot .wrap {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 12px;
-  color: var(--graphite);
-}
 
 /* Hero name letters (proximity weight). Inline-block so weight changes stay local. */
 .name-char {

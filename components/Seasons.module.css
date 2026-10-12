@@ -1,0 +1,233 @@
+.section {
+  position: relative;
+  padding: clamp(96px, 15vh, 160px) 0;
+}
+
+.head {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  align-items: end;
+  margin-bottom: clamp(40px, 6vh, 64px);
+}
+.node {
+  position: absolute;
+  left: calc(var(--margin) * 0.45);
+  top: 0.55em;
+  width: calc(var(--margin) * 0.55 - 6px);
+  height: 1px;
+  background: var(--line);
+  transition: background var(--t-ui);
+}
+.node:global(.is-traced) {
+  background: var(--ink);
+}
+.title {
+  grid-column: 1 / 7;
+  font-size: clamp(3rem, 7.4vw, 7.25rem);
+  font-weight: 600;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+}
+.intro {
+  grid-column: 7 / 11;
+  color: var(--graphite);
+  max-width: 38ch;
+}
+
+/* ---------- chart ---------- */
+.chart {
+  --label-w: clamp(220px, 28%, 360px);
+  position: relative;
+  padding-top: 34px;
+}
+.axis {
+  position: absolute;
+  top: 0;
+  left: var(--label-w);
+  right: 0;
+  height: 24px;
+}
+.year {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: var(--graphite);
+}
+
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.row {
+  display: grid;
+  grid-template-columns: var(--label-w) 1fr;
+  align-items: center;
+  min-height: 64px;
+  border-bottom: 1px solid var(--line);
+}
+.label {
+  display: grid;
+  gap: 2px;
+  padding-right: 16px;
+}
+.label strong {
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+.label :global(.mono) {
+  font-size: 0.6875rem;
+  color: var(--graphite);
+}
+
+.track {
+  position: relative;
+  height: 64px;
+}
+.grid {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--line);
+  opacity: 0.6;
+}
+.bar {
+  position: absolute;
+  top: 50%;
+  height: 10px;
+  margin-top: -5px;
+  background: var(--ink);
+  transform-origin: left;
+}
+.bar[data-kind="study"] {
+  background: transparent;
+  border: 1px solid var(--ink);
+}
+.bar[data-approx="true"] {
+  border-left-style: dashed;
+  border-right-style: dashed;
+}
+.bar[data-open="true"] {
+  background: var(--signal);
+}
+.bar[data-open="true"]::after {
+  /* the request is still running */
+  content: "";
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  margin-top: -4.5px;
+  border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 0 0 rgb(43 63 224 / 0.4);
+  animation: ping 1.8s var(--ease-out) infinite;
+}
+@keyframes ping {
+  to {
+    box-shadow: 0 0 0 10px rgb(43 63 224 / 0);
+  }
+}
+
+.overlay {
+  position: absolute;
+  top: 26px;
+  bottom: 0;
+  left: var(--label-w);
+  right: 0;
+  pointer-events: none;
+}
+.now,
+.mark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+.now {
+  background: var(--signal);
+}
+.now :global(.mono),
+.mark :global(.mono) {
+  position: absolute;
+  top: -22px;
+  white-space: nowrap;
+  font-size: 0.6875rem;
+}
+.now :global(.mono) {
+  left: 6px;
+  color: var(--signal);
+}
+.mark {
+  background: repeating-linear-gradient(to bottom, var(--ink) 0 4px, transparent 4px 8px);
+}
+.mark :global(.mono) {
+  right: 6px;
+  color: var(--ink);
+}
+
+.note {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: var(--label-w, 300px) 1fr;
+  gap: 16px;
+}
+.note :global(.mono) {
+  font-size: 0.75rem;
+  color: var(--graphite);
+}
+.note ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.note li {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.875rem;
+}
+
+:global(html[data-motion="reduced"]) .bar[data-open="true"]::after {
+  animation: none;
+}
+
+@media (max-width: 900px) {
+  .head {
+    grid-template-columns: 1fr;
+    row-gap: 14px;
+  }
+  .title,
+  .intro {
+    grid-column: 1 / -1;
+  }
+  .node {
+    display: none;
+  }
+  .chart {
+    --label-w: 0px;
+  }
+  .row {
+    grid-template-columns: 1fr;
+    padding-top: 12px;
+  }
+  .track {
+    height: 34px;
+  }
+  .note {
+    grid-template-columns: 1fr;
+  }
+  .mark :global(.mono) {
+    display: none;
+  }
+}

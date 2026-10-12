@@ -1,6 +1,7 @@
 .trace {
   position: absolute;
   inset: 0;
+  /* No z-index: a stacking context would isolate the difference blend. Rendered last instead. */
   pointer-events: none;
 }
 .inner {
@@ -21,10 +22,14 @@
   width: 1px;
 }
 .rail {
-  background: var(--line);
+  /* difference blend: dark on paper, light on the ink sections */
+  background: #fff;
+  mix-blend-mode: difference;
+  opacity: 0.16;
 }
 .fill {
-  background: var(--ink);
+  background: #fff;
+  mix-blend-mode: difference;
   transform-origin: top;
   transform: scaleY(0);
 }

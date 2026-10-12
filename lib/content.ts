@@ -163,3 +163,89 @@ export const codeProjects = [
   { slug: "employee-system", name: "Employee Management System", stack: ["React", "Node.js", "Express", "MongoDB", "JWT"], url: "https://github.com/dawood125/employee-management-system", summary: "MERN employee and task management with JWT auth and role-based access control." },
   { slug: "offlow", name: "Offlow (company project)", stack: ["Next.js", "React", "Figma"], summary: "Next.js App Router frontend built from Figma designs as part of professional work." },
 ] as const;
+
+/* ------------------------------------------------------------------------------------------------
+ * Inside AIWA Flow — the product Ibrahim Business Manager runs on.
+ * Nodes and the traced flow are taken from the live dashboard's own modules (see the demo capture)
+ * and the CV ("order tracking, stock alerts, and event-driven design"). Dawood to review wording.
+ * ---------------------------------------------------------------------------------------------- */
+export type AiwaNode = {
+  id: string;
+  label: string;
+  tech: string;
+  lane: "interface" | "core" | "data";
+  does: string;
+};
+
+export const aiwa = {
+  nodes: [
+    { id: "pos", label: "POS / new order", tech: "React + TypeScript", lane: "interface", does: "Counter staff create sales orders for customers." },
+    { id: "purchasing", label: "Purchasing", tech: "React + TypeScript", lane: "interface", does: "Suppliers, purchase orders and purchase returns." },
+    { id: "dashboard", label: "Dashboard", tech: "React + TypeScript · Recharts", lane: "interface", does: "Sales, expenses and profit by period; cash, bank, JazzCash and EasyPaisa balances; pending payments." },
+    { id: "api", label: "REST API", tech: "Laravel 11", lane: "core", does: "Validates every request and applies the business rules for orders, purchasing, returns and expenses." },
+    { id: "events", label: "Stock events", tech: "Laravel events", lane: "core", does: "Stock changes raise events, which drive low-stock and out-of-stock alerts." },
+    { id: "db", label: "Database", tech: "MySQL", lane: "data", does: "Companies, brands, categories, products, suppliers, customers, orders and ledgers." },
+  ] satisfies AiwaNode[],
+  /** One sale, traced through the system. Each step lights the node it happens in. */
+  flow: [
+    { node: "pos", text: "A sale is entered at the counter." },
+    { node: "api", text: "The Laravel API validates it and records the order." },
+    { node: "db", text: "Stock and the customer's ledger update in MySQL." },
+    { node: "events", text: "The stock change raises an event." },
+    { node: "dashboard", text: "Sales, cash and any low-stock warning show up on the dashboard." },
+  ],
+};
+
+/* ------------------------------------------------------------------------------------------------
+ * Stack × project matrix. Every dot comes from a project's stack above — nothing added.
+ * ---------------------------------------------------------------------------------------------- */
+export type SkillGroup = "Frontend" | "Backend" | "Data" | "AI" | "Cloud";
+export const matrix = {
+  projects: [
+    { slug: "ibrahim", short: "Ibrahim" },
+    { slug: "e-masjid", short: "E-Masjid" },
+    { slug: "biks", short: "BIKS" },
+    { slug: "sugarhills", short: "SugarHills" },
+    { slug: "rag-support-agent", short: "RAG agent" },
+    { slug: "jarvis", short: "Jarvis" },
+    { slug: "linkedin-automation", short: "LinkedIn hub" },
+    { slug: "freelancehub", short: "FreelanceHub" },
+    { slug: "employee-system", short: "Employee sys." },
+  ],
+  skills: [
+    { name: "Next.js", group: "Frontend", in: ["e-masjid", "biks"] },
+    { name: "React", group: "Frontend", in: ["ibrahim", "e-masjid", "biks", "sugarhills", "freelancehub", "employee-system"] },
+    { name: "TypeScript", group: "Frontend", in: ["ibrahim", "sugarhills"] },
+    { name: "Laravel 11", group: "Backend", in: ["ibrahim"] },
+    { name: "Node.js / Express", group: "Backend", in: ["e-masjid", "biks", "sugarhills", "jarvis", "freelancehub", "employee-system"] },
+    { name: "JWT auth / RBAC", group: "Backend", in: ["sugarhills", "employee-system"] },
+    { name: "Stripe", group: "Backend", in: ["freelancehub"] },
+    { name: "MySQL", group: "Data", in: ["ibrahim"] },
+    { name: "MongoDB", group: "Data", in: ["e-masjid", "biks", "sugarhills", "linkedin-automation", "freelancehub", "employee-system"] },
+    { name: "RAG · LangChain · LangGraph", group: "AI", in: ["rag-support-agent"] },
+    { name: "Groq LLM API", group: "AI", in: ["rag-support-agent", "jarvis"] },
+    { name: "n8n AI agents", group: "AI", in: ["linkedin-automation"] },
+    { name: "AWS EC2 + GitHub Actions", group: "Cloud", in: ["freelancehub"] },
+  ] satisfies { name: string; group: SkillGroup; in: string[] }[],
+};
+
+/* ------------------------------------------------------------------------------------------------
+ * Seasons — the career as a request waterfall. Dates from the CV.
+ * ---------------------------------------------------------------------------------------------- */
+export const seasons = {
+  from: "2022-07",
+  to: "2026-12",
+  rows: [
+    // CV gives years only for the degree; the bar is drawn with approximate (dashed) ends.
+    { label: "BS Information Technology", org: "University of the Punjab", start: "2022-10", end: "2026-06", kind: "study", approx: true },
+    { label: "Junior Web Developer (intern)", org: "RISS", start: "2023-06", end: "2023-11", kind: "work" },
+    { label: "Freelance web developer", org: "Independent", start: "2023-10", end: null, kind: "work" },
+    { label: "Backend Developer (intern)", org: "Sky Waves Software House", start: "2026-01", end: "2026-03", kind: "work" },
+    { label: "Full Stack Developer", org: "Sky Waves Software House", start: "2026-04", end: "2026-05", kind: "work" },
+    { label: "Full Stack Developer · intern → full-time (Oct 2026)", org: "Techling", start: "2026-06", end: null, kind: "work" },
+  ] as { label: string; org: string; start: string; end: string | null; kind: "work" | "study"; approx?: boolean }[],
+  /** Point events dated to the month (rendered as dashed markers). */
+  marks: [] as { at: string; label: string }[],
+  /** 2026 facts without a month: shown as a note, not as points on the axis. */
+  year2026: ["4 live client systems delivered", "HEC / NCEAC Generative AI — Top Performer", "BS IT completed"],
+};
