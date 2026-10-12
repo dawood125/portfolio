@@ -1,35 +1,21 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
 import { preload } from "react-dom";
 import { useMotionTier } from "@/lib/motion";
 import { profile } from "@/lib/content";
+import type { IntroVideo } from "@/lib/intro-media";
 import s from "./PortraitMonitor.module.css";
+
+// The theater (player, transcript, Web Audio meter) loads only when someone asks for the intro.
+const IntroTheater = dynamic(() => import("./IntroTheater"), { ssr: false });
 
 const POSTER = "/media/portrait-poster.webp";
 const RAMP = " .,:;-=+*#%@"; // dark → light
 const CELL_W = 7;
 const CELL_H = 11;
 const LENS_R = 92;
-
-type Cue = { start: number; end: number; text: string };
-
-function parseVtt(src: string): Cue[] {
-  const toS = (t: string) => {
-    const [h, m, sec] = t.split(":");
-    return Number(h) * 3600 + Number(m) * 60 + Number(sec);
-  };
-  return src
-    .split(/\r?\n\r?\n/)
-    .map((block) => {
-      const lines = block.trim().split(/\r?\n/);
-      const i = lines.findIndex((l) => l.includes("-->"));
-      if (i < 0) return null;
-      const [a, b] = lines[i].split("-->").map((x) => x.trim());
-      return { start: toS(a), end: toS(b), text: lines.slice(i + 1).join(" ") };
-    })
-    .filter((c): c is Cue => !!c);
-}
 
 const mmss = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
 
@@ -39,20 +25,19 @@ const mmss = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).
  * - X-ray lens (full tier, fine pointer): the portrait re-rendered live as characters — the glass box, literally.
  * - Intro: Dawood's cloned voice with synced captions, played over the living portrait.
  */
-export default function PortraitMonitor({ className }: { className?: string }) {
+export default function PortraitMonitor({ className, introVideo }: { className?: string; introVideo: IntroVideo | null }) {
   preload(POSTER, { as: "image", fetchPriority: "high" });
 
   const frame = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
-  const audio = useRef<HTMLAudioElement>(null);
+  const opener = useRef<HTMLButtonElement>(null);
   const sampler = useRef<HTMLCanvasElement | null>(null);
   const tier = useMotionTier();
 
   const [userPaused, setUserPaused] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const [intro, setIntro] = useState<{ on: boolean; t: number; cue: string }>({ on: false, t: 0, cue: "" });
-  const cues = useRef<Cue[] | null>(null);
+  const [theater, setTheater] = useState(false);
 
   // Loop playback: pause offscreen, never on reduced tier.
   useEffect(() => {
@@ -177,40 +162,14 @@ export default function PortraitMonitor({ className }: { className?: string }) {
   }
   useEffect(() => () => cancelAnimationFrame(lens.current.raf), []);
 
-  /* ---------- Intro (cloned-voice) ---------- */
-  async function toggleIntro() {
-    const a = audio.current;
-    if (!a) return;
-    if (intro.on) {
-      a.pause();
-      a.currentTime = 0;
-      setIntro({ on: false, t: 0, cue: "" });
-      return;
-    }
-    if (!cues.current) {
-      try {
-        cues.current = parseVtt(await (await fetch(profile.intro.captions)).text());
-      } catch {
-        cues.current = [];
-      }
-    }
-    setIntro({ on: true, t: 0, cue: "" });
-    a.currentTime = 0;
-    a.play().catch(() => setIntro({ on: false, t: 0, cue: "" }));
-    if (tier !== "reduced") {
-      setUserPaused(false);
-      video.current?.play().catch(() => {});
-    }
+  function openIntro() {
+    lens.current.tr = 0;
+    setTheater(true);
   }
-  function onTime() {
-    const a = audio.current;
-    if (!a) return;
-    const t = a.currentTime;
-    const cue = cues.current?.find((c) => t >= c.start && t <= c.end + 0.15)?.text ?? "";
-    setIntro((prev) => (prev.on ? { on: true, t, cue } : prev));
+  function closedIntro() {
+    setTheater(false);
+    opener.current?.focus({ preventScroll: true });
   }
-
-  const progress = intro.on ? Math.min(1, intro.t / profile.intro.seconds) : 0;
 
   return (
     <figure className={`${s.monitor} ${className ?? ""}`} data-portrait="">
@@ -222,6 +181,7 @@ export default function PortraitMonitor({ className }: { className?: string }) {
         onPointerEnter={onEnter}
         onPointerMove={onMove}
         onPointerLeave={onLeave}
+        onClick={openIntro}
       >
         <video
           ref={video}
@@ -242,40 +202,27 @@ export default function PortraitMonitor({ className }: { className?: string }) {
         </video>
         <canvas ref={canvas} className={s.lens} aria-hidden="true" />
 
-        {intro.on && (
-          <div className={s.captions} aria-live="off">
-            <p>{intro.cue}</p>
-          </div>
-        )}
-        <span className={s.progress} style={{ transform: `scaleX(${progress})` }} aria-hidden="true" />
-
         <span className={s.corner} data-c="tl" aria-hidden="true" />
         <span className={s.corner} data-c="tr" aria-hidden="true" />
         <span className={s.corner} data-c="bl" aria-hidden="true" />
         <span className={s.corner} data-c="br" aria-hidden="true" />
       </div>
 
-      <audio
-        ref={audio}
-        src={profile.intro.audio}
-        preload="none"
-        onTimeUpdate={onTime}
-        onEnded={() => setIntro({ on: false, t: 0, cue: "" })}
-      >
-        <track kind="captions" src={profile.intro.captions} srcLang="en" label="English" />
-      </audio>
-
       <figcaption className={`mono ${s.caption}`}>
         <span className={s.label}>
-          {intro.on
-            ? `AI voice-over · my cloned voice · ${mmss(intro.t)}/${mmss(profile.intro.seconds)}`
-            : lensEnabled
-              ? "AI-animated portrait · hover to x-ray"
-              : "AI-animated from a photo"}
+          {lensEnabled ? "AI-animated portrait · hover to x-ray" : "AI-animated from a photo"}
         </span>
         <span className={s.buttons}>
-          <button type="button" className={s.btn} data-primary="" onClick={toggleIntro} aria-pressed={intro.on}>
-            {intro.on ? "Stop intro" : `▶ Intro ${mmss(profile.intro.seconds)}`}
+          <button
+            ref={opener}
+            type="button"
+            className={s.btn}
+            data-primary=""
+            onClick={openIntro}
+            aria-haspopup="dialog"
+            aria-expanded={theater}
+          >
+            ▶ Intro {mmss(profile.intro.seconds)}
           </button>
           {tier !== "reduced" && (
             <button
@@ -290,6 +237,8 @@ export default function PortraitMonitor({ className }: { className?: string }) {
           )}
         </span>
       </figcaption>
+
+      {theater && <IntroTheater video={introVideo} origin={frame.current} loop={video.current} onClosed={closedIntro} />}
     </figure>
   );
 }

@@ -10,6 +10,9 @@
   background: #1a1a1c;
   overflow: visible;
 }
+.frame {
+  cursor: pointer;
+}
 .frame[data-lens="true"] {
   cursor: crosshair;
 }
@@ -29,35 +32,7 @@
   pointer-events: none;
 }
 
-.captions {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 40px 18px 18px;
-  background: linear-gradient(to top, rgb(17 18 20 / 0.86), rgb(17 18 20 / 0));
-  color: var(--paper);
-  pointer-events: none;
-}
-.captions p {
-  font-size: clamp(0.9375rem, 1.15vw, 1.0625rem);
-  line-height: 1.4;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  min-height: 2.8em;
-}
 
-.progress {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 2px;
-  background: var(--signal-ink);
-  transform-origin: left;
-  transform: scaleX(0);
-  transition: transform 260ms linear;
-}
 
 /* Registration marks just outside the frame: the "box" is measured, not decorated. */
 .corner {

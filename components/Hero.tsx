@@ -6,9 +6,10 @@ import { introPlaying, onIntroDone, useMotionTier } from "@/lib/motion";
 import { liveSystems, profile } from "@/lib/content";
 import LiveClock from "./LiveClock";
 import PortraitMonitor from "./PortraitMonitor";
+import type { IntroVideo } from "@/lib/intro-media";
 import s from "./Hero.module.css";
 
-export default function Hero() {
+export default function Hero({ introVideo }: { introVideo: IntroVideo | null }) {
   const root = useRef<HTMLElement>(null);
   const tier = useMotionTier();
 
@@ -120,7 +121,7 @@ export default function Hero() {
           <span className={s.nameLine}>Ahmed</span>
         </h1>
 
-        <PortraitMonitor className={s.portrait} />
+        <PortraitMonitor className={s.portrait} introVideo={introVideo} />
 
         <div className={s.lede} data-rise="">
           <p className={s.statement}>

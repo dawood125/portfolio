@@ -1,9 +1,0 @@
-Hi, I'm Dawood. Well, an AI version of him, speaking in his voice. The real one is a full-stack developer from Sheikhupura, near Lahore, and everything below this video is real.
-
-I build the systems businesses run on every day: an inventory ERP for a fertilizer distributor, a booking platform for a resort in Kerala, a marketplace for a machinery trading company in Japan, and the AI agents that answer questions about them.
-
-I work in Next.js, Laravel, and MongoDB, Express, React and Node. And in 2026, I was a Top Performer in the Higher Education Commission's Generative AI program.
-
-I'm available now, for full-time roles, remote or on-site, and for freelance projects.
-
-Ask my work anything below, or grab my CV.

@@ -6,6 +6,7 @@ import AskConsole from "@/components/AskConsole";
 import Trace from "@/components/Trace";
 import LiveSystems from "@/components/LiveSystems";
 import { checkLiveSystems } from "@/lib/status";
+import { findIntroVideo } from "@/lib/intro-media";
 import { profile } from "@/lib/content";
 
 // Live-system status is measured when the page regenerates.
@@ -13,6 +14,7 @@ export const revalidate = 300;
 
 export default async function Home() {
   const status = await checkLiveSystems();
+  const introVideo = findIntroVideo();
 
   return (
     <>
@@ -23,7 +25,7 @@ export default async function Home() {
       <SmoothScroll />
       <Header />
       <main id="main">
-        <Hero />
+        <Hero introVideo={introVideo} />
         <AskConsole />
         <div className="traced">
           <Trace />

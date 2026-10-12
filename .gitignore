@@ -7,3 +7,12 @@ out/
 # secrets
 .env
 .env*.local
+
+# Private source material (client data, raw recordings, reference videos) — never published
+Data/
+
+# Local-only avatar preview (watermarked trial export). The clean export ships as avatar.*
+public/media/intro/avatar-preview*
+
+# TypeScript incremental cache
+*.tsbuildinfo

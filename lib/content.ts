@@ -22,12 +22,19 @@ export const profile = {
   github: "https://github.com/dawood125",
   linkedin: "https://linkedin.com/in/dawood-ahmed-8953b63a2",
   cv: "/Dawood_Ahmed_CV.pdf",
-  /** Intro in Dawood's cloned voice (AI). Swap `video` in when the avatar MP4 is ready. */
+  /**
+   * 48-second intro: script by Dawood, voice cloned from his own 22-second recording, face animated from his photo.
+   * The talking-avatar files are detected at build time (lib/intro-media.ts); without them the intro plays as a
+   * voice-over on the living portrait.
+   */
   intro: {
     audio: "/media/intro/intro-voice.mp3",
     captions: "/media/intro/intro-captions.vtt",
-    video: null as null | { av1?: string; h264: string },
+    words: "/media/intro/intro-words.json",
     seconds: 48,
+    faceTool: "D-ID",
+    voiceTool: "Fish Audio",
+    voiceSampleSeconds: 22,
   },
   stack: {
     frontend: ["React", "Next.js (App Router, SSR)", "TypeScript", "Tailwind CSS"],
