@@ -1,0 +1,123 @@
+.header {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 20;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  height: 76px;
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-size: 1.0625rem;
+}
+.markUrdu {
+  height: 20px;
+  width: auto;
+  fill: var(--graphite);
+  transform: translateY(2px);
+}
+
+.nav {
+  display: flex;
+  gap: clamp(18px, 2.4vw, 36px);
+  font-size: 0.9375rem;
+}
+.nav a {
+  position: relative;
+  text-decoration: none;
+  padding: 6px 0;
+}
+.nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 1px;
+  background: var(--signal);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--t-ui) var(--ease-out);
+}
+.nav a:hover {
+  color: var(--signal);
+}
+.nav a:hover::after,
+.nav a:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--graphite);
+}
+.toggle > span[data-on] {
+  position: relative;
+  width: 30px;
+  height: 18px;
+  border-radius: 999px;
+  border: 1px solid var(--graphite);
+}
+.toggle > span[data-on]::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--graphite);
+  transition: transform var(--t-ui) var(--ease-out), background var(--t-ui);
+}
+.toggle > span[data-on="true"] {
+  border-color: var(--ink);
+}
+.toggle > span[data-on="true"]::after {
+  transform: translateX(12px);
+  background: var(--signal);
+}
+
+.cta {
+  --h: 40px;
+  padding: 0 18px;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 860px) {
+  .nav {
+    display: none;
+  }
+  .markUrdu {
+    display: none;
+  }
+}
+@media (max-width: 480px) {
+  .cta {
+    display: none;
+  }
+}

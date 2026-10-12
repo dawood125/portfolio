@@ -1,0 +1,90 @@
+.intro {
+  display: none;
+}
+
+/* Only shown when the pre-paint script decided to play it. */
+:global(html[data-intro="play"]) {
+  overflow: hidden;
+}
+:global(html[data-intro="play"]) .intro {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  background: var(--ink);
+  color: var(--paper);
+  clip-path: inset(0% 0% 0% 0%);
+  /* Fail-safe: if JS never runs, get out of the way. */
+  animation: failsafe 0s linear 2.8s forwards;
+}
+
+@keyframes failsafe {
+  to {
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+.stage {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+}
+
+.urdu {
+  width: min(56vw, 420px);
+  height: auto;
+  overflow: visible;
+}
+.urdu path {
+  fill: currentColor;
+  fill-opacity: 0;
+  stroke: currentColor;
+  stroke-width: 7;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.latin {
+  overflow: hidden;
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--fog);
+}
+.latin span {
+  display: block;
+  transform: translateY(100%);
+}
+
+.skip {
+  position: absolute;
+  right: var(--margin);
+  bottom: clamp(20px, 4vh, 40px);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--line-ink);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fog);
+  cursor: pointer;
+}
+.skip:hover {
+  color: var(--paper);
+  border-color: var(--fog);
+}
+.skip kbd {
+  font: inherit;
+  font-size: 0.6875rem;
+  padding: 1px 6px;
+  border: 1px solid var(--line-ink);
+  border-radius: 4px;
+}
+.skip:focus-visible {
+  outline-color: var(--signal-ink);
+}
