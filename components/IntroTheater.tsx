@@ -367,7 +367,7 @@ export default function IntroTheater({ video, origin, loop, onClosed }: Props) {
           <header className={s.head} data-reveal="">
             <p className="mono">
               <span className={s.dotLive} data-on={!paused} aria-hidden="true" />
-              intro.{video ? "mp4" : "voice"} · AI {video ? "avatar" : "voice-over"}
+              intro.{video ? "mp4" : "voice"} · AI {video ? "animated avatar" : "voice-over"}
             </p>
             <span className={s.meter} aria-hidden="true">
               {Array.from({ length: BARS }, (_, i) => (
@@ -453,9 +453,7 @@ export default function IntroTheater({ video, origin, loop, onClosed }: Props) {
           )}
 
           <p className={`mono ${s.disclosure}`} data-reveal="">
-            {video ? `Face animated from a photo with ${profile.intro.faceTool}` : "Portrait animated from a photo"} · voice cloned
-            from a {profile.intro.voiceSampleSeconds}-second recording of Dawood ({profile.intro.voiceTool}) · words written by
-            Dawood
+            {profile.intro.disclosure}
           </p>
         </aside>
       </div>

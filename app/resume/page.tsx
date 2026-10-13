@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { codeProjects, experience, profile, work } from "@/lib/content";
+import { codeProjects, experience, profile, work, SITE_URL } from "@/lib/content";
+import { breadcrumbs, graph, PERSON_ID, WEBSITE_ID } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
 import Reveal from "@/components/Reveal";
 import PrintButton from "@/components/PrintButton";
 import s from "./page.module.css";
@@ -8,7 +10,7 @@ import s from "./page.module.css";
 export const metadata: Metadata = {
   title: "Résumé — Dawood Ahmed, Full-Stack & GenAI Developer",
   description:
-    "Full-stack developer (React, Next.js, Node.js, Laravel) with applied GenAI. 3+ years, 25+ projects, client systems in Pakistan, Japan and India. Available for full-time roles, remote or on-site.",
+    "Résumé of Dawood Ahmed: full-stack developer (React, Next.js, Node.js, Laravel) with applied GenAI. 3+ years, 25+ projects. Open to remote or on-site roles.",
   alternates: { canonical: "/resume" },
 };
 
@@ -24,6 +26,23 @@ const STACK_LABELS: Record<string, string> = {
 export default function Resume() {
   return (
     <main id="main" className={s.page}>
+      <JsonLd
+        data={graph(
+          {
+            "@type": "ProfilePage",
+            "@id": `${SITE_URL}/resume#page`,
+            url: `${SITE_URL}/resume`,
+            name: "Résumé — Dawood Ahmed",
+            isPartOf: { "@id": WEBSITE_ID },
+            mainEntity: { "@id": PERSON_ID },
+            dateModified: "2026-10-13",
+          },
+          breadcrumbs([
+            { name: "Home", path: "/" },
+            { name: "Résumé", path: "/resume" },
+          ])
+        )}
+      />
       <Reveal className={`wrap ${s.sheet}`}>
         <header className={s.head}>
           <div>

@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { profile } from "@/lib/content";
+import { profile, SITE_URL } from "@/lib/content";
+import { breadcrumbs, graph, PERSON_ID } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
 import Reveal from "@/components/Reveal";
 import StreamHeading from "@/components/StreamHeading";
 import s from "./page.module.css";
 
 export const metadata: Metadata = {
-  title: "Hire Dawood Ahmed — business systems, websites, Shopify and AI assistants",
+  title: "Hire Dawood Ahmed — systems, websites, Shopify & AI",
   description:
-    "Freelance and full-time: POS and inventory systems, websites with booking or catalogue flows, Shopify stores and AI assistants that answer from your documents. Based in Pakistan, working with clients in Japan and India.",
+    "Hire a full-stack developer for POS and inventory systems, booking and catalogue websites, Shopify stores and AI assistants on your documents. Quoted per project.",
   alternates: { canonical: "/hire" },
 };
 
@@ -34,9 +36,9 @@ const SERVICES = [
   },
   {
     title: "AI assistants on your own documents",
-    body: "An assistant that answers customers from your policies and files, on your site or WhatsApp — and says when it doesn't know.",
+    body: "An assistant that answers customers from your policies and files, shows where each answer came from, and says when it doesn't know.",
     proof: [
-      { label: "RAG Support Agent", href: "/work/rag-support-agent" },
+      { label: "NeuralDesk", href: "/work/neuraldesk" },
       { label: "the Ask console on this site", href: "/#ask" },
     ],
   },
@@ -73,6 +75,24 @@ const BRIEF = encodeURIComponent(
 export default function Hire() {
   return (
     <main id="main" className={s.page}>
+      <JsonLd
+        data={graph(
+          {
+            "@type": "ItemList",
+            "@id": `${SITE_URL}/hire#services`,
+            name: "Services by Dawood Ahmed",
+            itemListElement: SERVICES.map((sv, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              item: { "@type": "Service", name: sv.title, description: sv.body, provider: { "@id": PERSON_ID }, areaServed: "Worldwide" },
+            })),
+          },
+          breadcrumbs([
+            { name: "Home", path: "/" },
+            { name: "Hire", path: "/hire" },
+          ])
+        )}
+      />
       <header className={`wrap ${s.hero}`}>
         <p className={`mono ${s.kicker}`}>hire · freelance and full-time</p>
         <StreamHeading as="h1" className={s.title}>

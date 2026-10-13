@@ -7,6 +7,8 @@ import CaseMedia from "@/components/CaseMedia";
 import CaseLayers from "@/components/CaseLayers";
 import Reveal from "@/components/Reveal";
 import StreamHeading from "@/components/StreamHeading";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbs, graph, PERSON_ID, snippet } from "@/lib/seo";
 import s from "./page.module.css";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -18,12 +20,13 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const item = workBySlug((await params).slug);
   if (!item) return {};
-  const title = `${item.name} — ${item.kind} · Dawood Ahmed`;
+  const long = `${item.name} — ${item.kind}`;
+  const title = long.length <= 60 ? long : `${item.name} — case study by Dawood Ahmed`;
   return {
     title,
-    description: item.summary,
+    description: snippet(item.summary),
     alternates: { canonical: `/work/${item.slug}` },
-    openGraph: { title, description: item.summary, type: "article", url: `${SITE_URL}/work/${item.slug}` },
+    openGraph: { title, description: snippet(item.summary), type: "article", url: `${SITE_URL}/work/${item.slug}` },
   };
 }
 
@@ -42,12 +45,37 @@ export default async function CaseStudy({ params }: Params) {
 
   return (
     <main id="main" className={s.page} data-ink-hero="" style={{ ["--accent" as string]: item.accent }}>
+      <JsonLd
+        data={graph(
+          {
+            "@type": "CreativeWork",
+            "@id": `${SITE_URL}/work/${item.slug}#work`,
+            name: item.name,
+            headline: `${item.name} — ${item.kind}`,
+            description: item.summary,
+            url: `${SITE_URL}/work/${item.slug}`,
+            image: `${SITE_URL}/work/${item.slug}/opengraph-image`,
+            dateCreated: item.year.slice(0, 4),
+            genre: item.kind,
+            keywords: item.stack.join(", "),
+            creator: { "@id": PERSON_ID },
+            author: { "@id": PERSON_ID },
+            ...(item.links.live ? { sameAs: item.links.live } : {}),
+            ...(item.links.code ? { codeRepository: item.links.code } : {}),
+          },
+          breadcrumbs([
+            { name: "Home", path: "/" },
+            { name: "Work", path: "/work" },
+            { name: item.name, path: `/work/${item.slug}` },
+          ])
+        )}
+      />
       {/* Inside the box: the case opens on ink */}
       <header className={s.hero}>
         <div className={`wrap ${s.heroGrid}`}>
-          <Link href="/#work" className={`mono ${s.back}`}>
-            ← all work
-          </Link>
+          <nav aria-label="Breadcrumb" className={`mono ${s.back}`}>
+            <Link href="/">home</Link> / <Link href="/work">work</Link> / <span aria-current="page">{item.slug}</span>
+          </nav>
           <p className={`mono ${s.kicker}`}>
             <span className={s.dot} aria-hidden="true" />
             case study · {item.sector} · {item.year}

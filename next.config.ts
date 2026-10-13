@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
   env: {
     BUILD_TIME: new Date().toISOString(),
   },
+  async redirects() {
+    return [
+      // The RAG case study was renamed to match the project's real name.
+      { source: "/work/rag-support-agent", destination: "/work/neuraldesk", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

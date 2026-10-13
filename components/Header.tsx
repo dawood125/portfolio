@@ -13,7 +13,7 @@ export default function Header() {
           <UrduMark className={s.markUrdu} title="" />
         </Link>
         <nav aria-label="Primary" className={s.nav}>
-          <a href="/#work">Work</a>
+          <Link href="/work">Work</Link>
           <a href="/#inside">Inside</a>
           <a href="/#ask">Ask</a>
           <Link href="/resume">Résumé</Link>

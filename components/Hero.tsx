@@ -117,7 +117,7 @@ export default function Hero({ introVideo }: { introVideo: IntroVideo | null }) 
         </div>
 
         <h1 id="hero-name" className={s.name} data-name="">
-          <span className={s.nameLine}>Dawood</span>
+          <span className={s.nameLine}>Dawood</span>{" "}
           <span className={s.nameLine}>Ahmed</span>
         </h1>
 
@@ -140,7 +140,7 @@ export default function Hero({ introVideo }: { introVideo: IntroVideo | null }) 
         <dl className={s.spec} data-rise="">
           <div>
             <dt>Builds with</dt>
-            <dd>Next.js · Laravel · MERN · RAG / LangGraph</dd>
+            <dd>Next.js · Laravel · MERN · RAG + Pinecone</dd>
           </div>
           <div>
             <dt>Track record</dt>

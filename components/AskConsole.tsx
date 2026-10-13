@@ -6,11 +6,8 @@ import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "rea
 import { codeProjects, profile, work } from "@/lib/content";
 import s from "./AskConsole.module.css";
 
-const STARTERS = [
-  "What has he shipped that's live?",
-  "How deep is his GenAI work?",
-  "Can he start soon — remote or on-site?",
-];
+import { STARTERS } from "@/lib/starters";
+import type { StarterAnswer } from "@/app/api/starters/route";
 
 type Turn = { role: "user" | "assistant"; content: string };
 
@@ -25,6 +22,8 @@ type Run = {
   attempts?: number;
   contextTokens?: number;
   retrieved?: string[];
+  /** Set when the answer came from the daily cache (ISO time it was generated). */
+  cachedAt?: string;
 };
 
 type Source = { label: string; href: string; external?: boolean; image?: string; kind?: string };
@@ -113,6 +112,37 @@ function Pipeline({ run, now }: { run: Run; now: number }) {
   // Before headers arrive we only know "in flight". After, the server tells us how much of that was the model.
   const net = run.headers != null ? Math.max(0, run.headers - run.t0 - (run.modelMs ?? 0)) : undefined;
   const modelStart = run.t0 + (net ?? 0);
+  if (run.cachedAt) {
+    const at = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Karachi" }).format(new Date(run.cachedAt));
+    const fetchMs = (run.headers ?? stop) - run.t0;
+    const streamMs = run.end ? run.end - (run.headers ?? run.t0) : now - (run.headers ?? run.t0);
+    return (
+      <ol className={s.pipe} aria-label="How this answer was produced">
+        <li data-state={run.headers ? "done" : "live"}>
+          <span className={s.pipeLabel}>your browser → CDN cache</span>
+          <span className={s.pipeMs}>{ms(fetchMs)}</span>
+          <span className={s.pipeTrack}>
+            <span className={s.pipeBar} style={{ left: 0, width: `${(fetchMs / Math.max(1, stop - run.t0)) * 100}%` }} />
+          </span>
+          <span className={s.pipeDetail}>
+            a starter question — answered once a day, not per click · retrieved{" "}
+            {run.retrieved?.length ? run.retrieved.map((x) => sources[x]?.label ?? x).join(" + ") : "index only"}
+          </span>
+        </li>
+        <li data-state="done">
+          <span className={s.pipeLabel}>model</span>
+          <span className={s.pipeMs}>cached</span>
+          <span className={s.pipeDetail}>
+            {run.model?.split("/").pop()} on Groq · generated {at} PKT · ask your own question for a live answer
+          </span>
+        </li>
+        <li data-state={run.end ? "done" : "live"}>
+          <span className={s.pipeLabel}>replay the answer</span>
+          <span className={s.pipeMs}>{ms(streamMs)}</span>
+        </li>
+      </ol>
+    );
+  }
   const stages = [
     {
       label: "your browser → server",
@@ -172,6 +202,14 @@ export default function AskConsole() {
   const [now, setNow] = useState(0);
   const history = useRef<Turn[]>([]);
   const abort = useRef<AbortController | null>(null);
+  const starters = useRef<Promise<Record<string, StarterAnswer>> | null>(null);
+
+  function loadStarters() {
+    starters.current ??= fetch("/api/starters")
+      .then((r) => (r.ok ? r.json() : {}))
+      .catch(() => ({}));
+    return starters.current;
+  }
 
   // Tick the live pipeline while a request is in flight.
   useEffect(() => {
@@ -203,6 +241,33 @@ export default function AskConsole() {
 
     let full = "";
     try {
+      // Starter chips on a fresh conversation: replay today's cached answer instead of calling the model.
+      if (!history.current.length && (STARTERS as readonly string[]).includes(text)) {
+        const cached = (await loadStarters())[text];
+        if (cached && !ctrl.signal.aborted) {
+          r.headers = performance.now();
+          r.cachedAt = cached.generatedAt;
+          r.model = cached.model;
+          r.retrieved = cached.retrieved;
+          r.contextTokens = cached.contextTokens;
+          setRun({ ...r });
+          const parts = cached.answer.split(/(\s+)/);
+          for (let i = 0; i < parts.length; i += 2) {
+            if (ctrl.signal.aborted) return;
+            full += parts[i] + (parts[i + 1] ?? "");
+            if (!r.first) {
+              r.first = performance.now();
+              setRun({ ...r });
+            }
+            setAnswer(full);
+            await new Promise((res) => setTimeout(res, 16));
+          }
+          r.end = performance.now();
+          setRun({ ...r });
+          history.current = [{ role: "user" as const, content: text }, { role: "assistant" as const, content: full }];
+          return;
+        }
+      }
       const res = await fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -292,7 +357,15 @@ export default function AskConsole() {
 
           <div className={s.chips}>
             {STARTERS.map((t) => (
-              <button key={t} type="button" className={s.chip} onClick={() => ask(t)} disabled={busy}>
+              <button
+                key={t}
+                type="button"
+                className={s.chip}
+                onClick={() => ask(t)}
+                onPointerEnter={loadStarters}
+                onFocus={loadStarters}
+                disabled={busy}
+              >
                 {t}
               </button>
             ))}

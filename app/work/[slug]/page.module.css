@@ -24,11 +24,17 @@
   grid-column: 1 / -1;
   justify-self: start;
   font-size: 0.75rem;
+  color: #8a8d94;
+}
+.back a {
   color: var(--fog);
   text-decoration: none;
 }
-.back:hover {
+.back a:hover {
   color: var(--signal-ink);
+}
+.back [aria-current] {
+  color: var(--paper);
 }
 .kicker {
   grid-column: 1 / -1;
@@ -109,7 +115,7 @@
   text-underline-offset: 3px;
 }
 .facts a:focus-visible,
-.back:focus-visible {
+.back a:focus-visible {
   outline-color: var(--signal-ink);
 }
 .note {

@@ -20,7 +20,7 @@ const SYNONYMS: Record<string, string[]> = {
   sugarhills: ["resort", "hotel", "booking", "bookings", "hospitality", "kerala", "india", "indian", "seo", "travel", "guests"],
   bikks: ["japan", "japanese", "bilingual", "machinery", "vehicle", "vehicles", "excavator", "catalogue", "catalog", "dealer", "line", "trading"],
   diversity: ["shopify", "ecommerce", "e-commerce", "store", "shop", "liquid", "theme", "desk", "online"],
-  "rag-support-agent": ["rag", "ai", "genai", "llm", "chatbot", "agent", "embeddings", "vector", "pinecone", "groq", "support", "retrieval", "whatsapp"],
+  neuraldesk: ["rag", "ai", "genai", "llm", "chatbot", "agent", "embeddings", "vector", "pinecone", "groq", "openai", "support", "retrieval", "widget", "chunking"],
   "e-masjid": ["fyp", "final", "university", "mosque", "masjid", "student", "backend", "team", "stripe", "degree"],
 };
 
