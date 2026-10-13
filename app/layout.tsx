@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Host_Grotesk, IBM_Plex_Mono } from "next/font/google";
-import { profile } from "@/lib/content";
+import { profile, SITE_URL } from "@/lib/content";
 import { tierScript } from "@/lib/motion";
 import "./globals.css";
 
@@ -8,7 +8,8 @@ const sans = Host_Grotesk({ subsets: ["latin"], variable: "--font-sans", display
 const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://dawoodahmed.dev"),
+  metadataBase: new URL(SITE_URL),
+  alternates: { canonical: "/" },
   title: "Dawood Ahmed — Full-Stack & GenAI Developer",
   description:
     "Dawood Ahmed builds the business systems clients run every day (Laravel, Next.js, MERN) and the AI that answers for them. Sheikhupura, Pakistan. Available for full-time and freelance work.",
@@ -26,7 +27,8 @@ export const viewport: Viewport = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
-  "@id": "https://dawoodahmed.dev/#person",
+  "@id": `${SITE_URL}/#person`,
+  url: SITE_URL,
   name: profile.name,
   alternateName: profile.nameUrdu,
   jobTitle: "Full-Stack & GenAI Developer",

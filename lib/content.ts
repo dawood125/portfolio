@@ -1,6 +1,9 @@
 // Single source of truth for every fact on the site and in the Ask corpus.
 // Rule (DESIGN.md): only facts Dawood can back up. Leave a field out rather than guess.
 
+/** Canonical origin. Must match Vercel's primary domain (www; the apex 308-redirects to it). */
+export const SITE_URL = "https://www.dawoodahmed.dev";
+
 export const profile = {
   name: "Dawood Ahmed",
   nameUrdu: "داؤد احمد",
