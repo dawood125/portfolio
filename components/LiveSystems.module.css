@@ -83,6 +83,35 @@
   transform: scaleY(1);
 }
 
+.cover {
+  text-decoration: none;
+  color: inherit;
+}
+/* the whole row opens the case study; the visit link sits above the cover */
+.cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 16px;
+}
+.visit {
+  position: relative;
+  z-index: 1;
+  font-size: 0.75rem;
+  color: var(--graphite);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.visit:hover {
+  color: var(--signal);
+  border-bottom-color: var(--signal);
+}
 .name {
   display: flex;
   align-items: baseline;
@@ -108,7 +137,7 @@
   color: var(--signal);
 }
 .row:hover .name,
-.row:focus-visible .name {
+.cover:focus-visible {
   color: var(--signal);
 }
 
@@ -176,18 +205,6 @@
   height: 100%;
   object-fit: cover;
   object-position: top left;
-}
-/* Still screens drift slowly so the monitor never looks frozen. */
-:global(html[data-motion="full"]) .media[data-pan="true"] img {
-  animation: pan 14s ease-in-out infinite alternate;
-}
-@keyframes pan {
-  from {
-    transform: scale(1.06) translate(0, 0);
-  }
-  to {
-    transform: scale(1.06) translate(-2.4%, -3%);
-  }
 }
 
 /* Inspect x-ray */

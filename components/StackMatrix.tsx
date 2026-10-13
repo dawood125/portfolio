@@ -3,20 +3,20 @@
 import { useRef, useState } from "react";
 import { Flip, gsap, useGSAP } from "@/lib/gsap";
 import { useMotionTier } from "@/lib/motion";
-import { codeProjects, liveSystems, matrix, type SkillGroup } from "@/lib/content";
+import { codeProjects, matrix, work, type SkillGroup } from "@/lib/content";
 import StreamHeading from "./StreamHeading";
 import s from "./StackMatrix.module.css";
 
 
-const GROUPS: ("All" | SkillGroup)[] = ["All", "Frontend", "Backend", "Data", "AI", "Cloud"];
+const GROUPS: ("All" | SkillGroup)[] = ["All", "Frontend", "Backend", "Data", "AI", "Ship", "Commerce"];
 
 const projectHref = (slug: string) => {
-  if (liveSystems.some((x) => x.slug === slug)) return `#system-${slug}`;
+  if (work.some((x) => x.slug === slug)) return `/work/${slug}`;
   const p = codeProjects.find((x) => x.slug === slug);
   return p && "url" in p && p.url ? p.url : "#work";
 };
 const projectName = (slug: string) =>
-  liveSystems.find((x) => x.slug === slug)?.name ?? codeProjects.find((x) => x.slug === slug)?.name ?? slug;
+  work.find((x) => x.slug === slug)?.name ?? codeProjects.find((x) => x.slug === slug)?.name ?? slug;
 
 /** Every dot is a project's own stack entry (lib/content). Filter by area; hover to cross-highlight. */
 export default function StackMatrix() {

@@ -1,4 +1,4 @@
-import { buildSystemPrompt, SOURCE_TAGS } from "@/lib/ask-corpus";
+import { buildSystemPrompt, retrieve } from "@/lib/ask-corpus";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -62,7 +62,9 @@ export async function POST(req: Request) {
     return new Response(`Ask in ${MAX_QUESTION} characters or fewer.`, { status: 400 });
   }
 
-  const messages = [{ role: "system", content: buildSystemPrompt() }, ...cleanHistory(body.history), { role: "user", content: q }];
+  const history = cleanHistory(body.history);
+  const retrieved = retrieve(q, history.filter((t) => t.role === "assistant"));
+  const messages = [{ role: "system", content: buildSystemPrompt(retrieved) }, ...history, { role: "user", content: q }];
   // Rough token estimate (≈4 chars/token) so the console can show what the model actually read.
   const contextTokens = Math.round(messages.reduce((n, m) => n + m.content.length, 0) / 4);
   let upstream: Response | null = null;
@@ -139,7 +141,7 @@ export async function POST(req: Request) {
       "X-Attempts": String(attempts),
       "X-Model-Ms": String(modelMs),
       "X-Context-Tokens": String(contextTokens),
-      "X-Sources": String(SOURCE_TAGS.length),
+      "X-Retrieved": retrieved.join(","),
     },
   });
 }

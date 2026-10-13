@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useMotionTier } from "@/lib/motion";
@@ -110,14 +111,16 @@ export default function Seasons({ now }: { now: string }) {
           </div>
         </div>
 
-        <aside className={s.note}>
-          <p className="mono">also in 2026</p>
-          <ul>
-            {seasons.year2026.map((f) => (
-              <li key={f}>{f}</li>
-            ))}
-          </ul>
-        </aside>
+        {seasons.shipped.map((y) => (
+          <aside key={y.year} className={s.note}>
+            <p className="mono">shipped in {y.year}</p>
+            <ul>
+              {y.items.map((it) => (
+                <li key={it.label}>{it.slug ? <Link href={`/work/${it.slug}`}>{it.label}</Link> : <span>{it.label}</span>}</li>
+              ))}
+            </ul>
+          </aside>
+        ))}
       </div>
     </section>
   );

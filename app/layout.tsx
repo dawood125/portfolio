@@ -1,7 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import { Host_Grotesk, IBM_Plex_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { profile, SITE_URL } from "@/lib/content";
 import { tierScript } from "@/lib/motion";
+import { getBuildInfo } from "@/lib/build-info";
+import Header from "@/components/Header";
+import SmoothScroll from "@/components/SmoothScroll";
+import SiteFooter from "@/components/SiteFooter";
+import TrackClicks from "@/components/TrackClicks";
+import RouteEffects from "@/components/RouteEffects";
 import "./globals.css";
 
 const sans = Host_Grotesk({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
@@ -10,7 +18,7 @@ const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variabl
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: "/" },
-  title: "Dawood Ahmed — Full-Stack & GenAI Developer",
+  title: { default: "Dawood Ahmed — Full-Stack & GenAI Developer", template: "%s" },
   description:
     "Dawood Ahmed builds the business systems clients run every day (Laravel, Next.js, MERN) and the AI that answers for them. Sheikhupura, Pakistan. Available for full-time and freelance work.",
   openGraph: {
@@ -48,7 +56,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <a className="skip-link" href="#main">
+          Skip to content
+        </a>
+        <SmoothScroll />
+        <Header />
+        {children}
+        <SiteFooter build={getBuildInfo()} />
+        <TrackClicks />
+        <RouteEffects />
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   );
 }

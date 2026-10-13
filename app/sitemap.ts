@@ -1,6 +1,12 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "@/lib/content";
+import { SITE_URL, work } from "@/lib/content";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [{ url: SITE_URL, lastModified: new Date(), changeFrequency: "monthly", priority: 1 }];
+  const now = new Date();
+  return [
+    { url: SITE_URL, lastModified: now, changeFrequency: "weekly", priority: 1 },
+    { url: `${SITE_URL}/resume`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${SITE_URL}/hire`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    ...work.map((w) => ({ url: `${SITE_URL}/work/${w.slug}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.8 })),
+  ];
 }

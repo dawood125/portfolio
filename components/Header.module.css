@@ -108,16 +108,77 @@
   font-size: 0.875rem;
 }
 
+.mark,
+.tools .cta {
+  white-space: nowrap;
+}
+
+/* Phones and small tablets: the nav becomes a swipeable row under the bar. */
 @media (max-width: 860px) {
+  .bar {
+    flex-wrap: wrap;
+    height: auto;
+    padding-top: 14px;
+    row-gap: 6px;
+  }
   .nav {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    gap: 22px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+    scrollbar-width: none;
+    font-size: 0.875rem;
+  }
+  .nav::-webkit-scrollbar {
     display: none;
+  }
+  .nav a {
+    flex: none;
   }
   .markUrdu {
     display: none;
   }
 }
 @media (max-width: 480px) {
-  .cta {
+  .tools .cta {
     display: none;
   }
+}
+
+/* Pages that open on ink (case studies): the header flips to light-on-dark. */
+:global(body:has([data-ink-hero])) .header {
+  color: var(--paper);
+  --line: var(--line-ink);
+}
+:global(body:has([data-ink-hero])) .markUrdu {
+  fill: var(--fog);
+}
+:global(body:has([data-ink-hero])) .nav a::after {
+  background: var(--signal-ink);
+}
+:global(body:has([data-ink-hero])) .nav a:hover {
+  color: var(--signal-ink);
+}
+:global(body:has([data-ink-hero])) .toggle {
+  color: var(--fog);
+}
+:global(body:has([data-ink-hero])) .toggle > span[data-on] {
+  border-color: var(--fog);
+}
+:global(body:has([data-ink-hero])) .toggle > span[data-on="true"]::after {
+  background: var(--signal-ink);
+}
+:global(body:has([data-ink-hero])) .cta {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--ink);
+}
+:global(body:has([data-ink-hero])) .cta:hover {
+  background: var(--signal-ink);
+  border-color: var(--signal-ink);
+}
+:global(body:has([data-ink-hero])) .header :focus-visible {
+  outline-color: var(--signal-ink);
 }

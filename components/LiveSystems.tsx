@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { useEffect, useRef, useState, ViewTransition } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useMotionTier } from "@/lib/motion";
 import { liveSystems } from "@/lib/content";
@@ -105,8 +106,8 @@ export default function LiveSystems({ status }: { status: StatusReport }) {
         </StreamHeading>
         <div className={s.intro}>
           <p>
-            Four client systems I built and delivered in 2026 that people use every day. The status next to each one is
-            measured by this site&apos;s server, not typed in.
+            Four client systems I built, delivered in 2025 and 2026 and in use every day. Open one for the full story; the
+            status next to each is measured by this site&apos;s server, not typed in.
           </p>
           <p className={`mono ${s.checked}`}>checked {pktTime(status.checkedAt)} PKT · re-checked every 5 min</p>
         </div>
@@ -118,39 +119,37 @@ export default function LiveSystems({ status }: { status: StatusReport }) {
             const r = status.systems[sys.slug];
             return (
               <li key={sys.slug} id={`system-${sys.slug}`} className={s.item} data-active={sys.slug === active}>
-                <a
-                  className={s.row}
-                  href={sys.url}
-                  target="_blank"
-                  rel="noopener"
-                  onMouseEnter={() => setActive(sys.slug)}
-                  onFocus={() => setActive(sys.slug)}
-                >
+                <div className={s.row} onMouseEnter={() => setActive(sys.slug)} onFocusCapture={() => setActive(sys.slug)}>
                   <span className={s.thumb}>
                     <Image src={sys.image} alt="" fill sizes="(max-width: 900px) 92vw, 1px" />
                   </span>
-                  <span className={s.name}>
+                  <Link href={sys.href} className={`${s.name} ${s.cover}`}>
                     {sys.name}
                     <span className={s.arrow} aria-hidden="true">
-                      ↗
+                      →
                     </span>
-                  </span>
+                    <span className="sr-only"> — case study</span>
+                  </Link>
                   <span className={s.kind}>
                     {sys.kind} · {sys.client}
                   </span>
                   <span className={`mono ${s.stack}`}>{sys.stack.join(" · ")}</span>
-                  <span className={`mono ${s.status}`} data-ok={r?.ok}>
-                    {r?.ok ? (
-                      <>
-                        <span className={s.dot} aria-hidden="true" />
-                        up · HTTP {r.code} · {r.ms} ms
-                      </>
-                    ) : (
-                      <>no answer within 10 s at last check</>
-                    )}
+                  <span className={s.foot}>
+                    <span className={`mono ${s.status}`} data-ok={r?.ok}>
+                      {r?.ok ? (
+                        <>
+                          <span className={s.dot} aria-hidden="true" />
+                          up · HTTP {r.code} · {r.ms} ms
+                        </>
+                      ) : (
+                        <>no answer within 10 s at last check</>
+                      )}
+                    </span>
+                    <a className={`mono ${s.visit}`} href={sys.url} target="_blank" rel="noopener">
+                      {sys.host} ↗<span className="sr-only"> (opens in a new tab)</span>
+                    </a>
                   </span>
-                  <span className="sr-only"> (opens {sys.host} in a new tab)</span>
-                </a>
+                </div>
               </li>
             );
           })}
@@ -166,6 +165,7 @@ export default function LiveSystems({ status }: { status: StatusReport }) {
                   data-layer={sys.slug}
                   style={{ zIndex: sys.slug === liveSystems[0].slug ? 2 : 0 }}
                 >
+                  <ViewTransition name={`shot-${sys.slug}`} share="morph" default="none">
                   <div className={s.media} data-media="" data-pan={!sys.video}>
                     {sys.video ? (
                       <video muted loop playsInline preload="none" poster={sys.image} aria-label={`${sys.name} — scrolling screen recording`}>
@@ -182,6 +182,7 @@ export default function LiveSystems({ status }: { status: StatusReport }) {
                       />
                     )}
                   </div>
+                  </ViewTransition>
                 </div>
               ))}
 

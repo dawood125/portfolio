@@ -1,0 +1,227 @@
+.page {
+  padding: 128px 0 clamp(64px, 10vh, 120px);
+}
+@media (max-width: 860px) {
+  .page {
+    padding-top: 136px;
+  }
+}
+.sheet {
+  max-width: 1080px;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--ink);
+}
+.kicker {
+  font-size: 0.75rem;
+  color: var(--graphite);
+}
+.name {
+  margin-top: 10px;
+  font-size: clamp(3rem, 7vw, 6rem);
+  font-weight: 620;
+  letter-spacing: -0.055em;
+  line-height: 0.9;
+}
+.role {
+  margin-top: 14px;
+  font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+  color: var(--graphite);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.contact {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-bottom: 1px solid var(--line);
+}
+.contact > div {
+  padding: 16px 16px 16px 0;
+}
+.contact > div + div {
+  padding-left: 16px;
+  border-left: 1px solid var(--line);
+}
+.contact dt {
+  font-size: 0.75rem;
+  color: var(--graphite);
+}
+.contact dd {
+  margin: 4px 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.contact a {
+  text-underline-offset: 3px;
+}
+
+.section {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 16px 32px;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--line);
+}
+.label {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--graphite);
+  padding-top: 4px;
+}
+.summary {
+  font-size: clamp(1.125rem, 1.5vw, 1.3125rem);
+  line-height: 1.5;
+  max-width: 62ch;
+}
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 22px;
+}
+.timeline li {
+  display: grid;
+  gap: 4px;
+}
+.when {
+  font-size: 0.75rem;
+  color: var(--signal);
+}
+.timeline h3 {
+  font-size: 1.1875rem;
+  font-weight: 560;
+  letter-spacing: -0.015em;
+}
+.timeline h3 span {
+  font-weight: 400;
+  color: var(--graphite);
+}
+.timeline p:last-child {
+  color: var(--graphite);
+}
+
+.work {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 20px;
+}
+.work li {
+  display: grid;
+  gap: 4px;
+}
+.work a {
+  text-decoration: none;
+  font-size: 1.0625rem;
+}
+.work a strong {
+  font-weight: 600;
+}
+.work a:hover {
+  color: var(--signal);
+}
+.work p {
+  color: var(--graphite);
+}
+.meta {
+  font-size: 0.6875rem;
+}
+.more {
+  grid-column: 2;
+  color: var(--graphite);
+  font-size: 0.9375rem;
+}
+
+.skills {
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+.skills > div {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 12px;
+}
+.skills dt {
+  font-weight: 560;
+}
+.skills dd {
+  margin: 0;
+  color: var(--graphite);
+}
+
+.edu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  line-height: 1.5;
+}
+.edu :global(.mono) {
+  color: var(--graphite);
+  font-size: 0.75rem;
+}
+
+@media (max-width: 860px) {
+  .contact {
+    grid-template-columns: 1fr 1fr;
+  }
+  .contact > div:nth-child(3) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .section {
+    grid-template-columns: 1fr;
+  }
+  .more {
+    grid-column: 1;
+  }
+}
+@media (max-width: 520px) {
+  .contact {
+    grid-template-columns: 1fr;
+  }
+  .contact > div,
+  .contact > div + div {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .skills > div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+
+/* A clean, single-column print: no header, footer, trace or buttons. */
+@media print {
+  .page {
+    padding: 0;
+  }
+  .actions {
+    display: none;
+  }
+  .section {
+    break-inside: avoid;
+    padding: 14px 0;
+  }
+  .name {
+    font-size: 40pt;
+  }
+}

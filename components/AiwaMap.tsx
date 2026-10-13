@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useMotionTier } from "@/lib/motion";
@@ -7,15 +8,7 @@ import { aiwa } from "@/lib/content";
 import StreamHeading from "./StreamHeading";
 import s from "./AiwaMap.module.css";
 
-type Edge = { from: string; to: string };
-const EDGES: Edge[] = [
-  { from: "pos", to: "api" },
-  { from: "purchasing", to: "api" },
-  { from: "api", to: "dashboard" },
-  { from: "api", to: "db" },
-  { from: "db", to: "events" },
-  { from: "events", to: "dashboard" },
-];
+const EDGES = aiwa.edges;
 
 const LANES = [
   { id: "interface", label: "Interface" },
@@ -136,6 +129,7 @@ export default function AiwaMap() {
         .timeline({ scrollTrigger: { trigger: map.current, start: "top 72%", once: true } })
         .to(nodes, { y: 0, autoAlpha: 1, duration: 0.6, stagger: 0.07 })
         .to(edges, { strokeDashoffset: 0, duration: 0.7, stagger: 0.08, ease: "power2.inOut" }, 0.25)
+        .fromTo(el.querySelectorAll("[data-ship]"), { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, stagger: 0.08 }, 0.6)
         .add(() => replay.current(), "+=0.2");
 
       return () => current?.kill();
@@ -160,8 +154,9 @@ export default function AiwaMap() {
           Inside the box.
         </StreamHeading>
         <p className={s.intro}>
-          AIWA Flow is my own inventory product — Ibrahim Business Manager runs on it. Here is one sale, traced through
-          it. Pick any part to see what it does.
+          AIWA Flow is my own POS and inventory product. The same code runs online for Ibrahim Business Manager and as
+          an offline desktop install at Gibs Distributor. Here is one sale, traced through it — pick any part to see
+          what it does.
         </p>
       </div>
 
@@ -218,6 +213,24 @@ export default function AiwaMap() {
             <p>{sel.does}</p>
           </div>
         </aside>
+      </div>
+
+      <div className={`wrap ${s.ships}`}>
+        <p className={`mono ${s.shipsLabel}`}>one codebase · ships as</p>
+        <ul>
+          {aiwa.ships.map((sh) => (
+            <li key={sh.label} className={s.ship} data-ship="">
+              <span className={`mono ${s.shipTech}`}>{sh.tech}</span>
+              <strong>{sh.label}</strong>
+              <span>
+                {sh.where} — {sh.does}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <Link className={s.caseLink} href="/work/aiwa-flow">
+          Read the AIWA Flow case study <span aria-hidden="true">→</span>
+        </Link>
       </div>
     </section>
   );

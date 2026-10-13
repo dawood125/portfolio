@@ -1,18 +1,15 @@
 import Intro from "@/components/Intro";
-import SmoothScroll from "@/components/SmoothScroll";
-import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import AskConsole from "@/components/AskConsole";
 import Trace from "@/components/Trace";
 import LiveSystems from "@/components/LiveSystems";
+import Quotes from "@/components/Quotes";
 import AiwaMap from "@/components/AiwaMap";
 import Retrieval from "@/components/Retrieval";
 import StackMatrix from "@/components/StackMatrix";
 import Seasons from "@/components/Seasons";
-import SiteFooter from "@/components/SiteFooter";
 import { checkLiveSystems } from "@/lib/status";
 import { findIntroVideo } from "@/lib/intro-media";
-import { getBuildInfo } from "@/lib/build-info";
 
 // Live-system status is measured when the page regenerates.
 export const revalidate = 300;
@@ -25,21 +22,16 @@ function nowInPkt() {
 export default async function Home() {
   const status = await checkLiveSystems();
   const introVideo = findIntroVideo();
-  const build = getBuildInfo();
 
   return (
     <>
-      <a className="skip-link" href="#work">
-        Skip to work
-      </a>
       <Intro />
-      <SmoothScroll />
-      <Header />
       <main id="main">
         <Hero introVideo={introVideo} />
         <AskConsole />
         <div className="traced">
           <LiveSystems status={status} />
+          <Quotes />
           <AiwaMap />
           <Retrieval />
           <StackMatrix />
@@ -48,7 +40,6 @@ export default async function Home() {
           <Trace />
         </div>
       </main>
-      <SiteFooter build={build} />
     </>
   );
 }

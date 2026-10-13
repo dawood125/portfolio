@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { profile } from "@/lib/content";
 import MotionToggle from "./MotionToggle";
 import UrduMark from "./UrduMark";
@@ -7,18 +8,16 @@ export default function Header() {
   return (
     <header className={s.header} data-site-header="">
       <div className={`wrap ${s.bar}`}>
-        <a className={s.mark} href="#top" aria-label="Dawood Ahmed — back to top">
+        <Link className={s.mark} href="/" aria-label="Dawood Ahmed — home">
           <span className={s.markName}>Dawood Ahmed</span>
           <UrduMark className={s.markUrdu} title="" />
-        </a>
+        </Link>
         <nav aria-label="Primary" className={s.nav}>
-          <a href="#work">Work</a>
-          <a href="#inside">Inside</a>
-          <a href="#ask">Ask</a>
-          <a href={profile.cv} target="_blank" rel="noopener">
-            Résumé
-          </a>
-          <a href="#contact">Contact</a>
+          <a href="/#work">Work</a>
+          <a href="/#inside">Inside</a>
+          <a href="/#ask">Ask</a>
+          <Link href="/resume">Résumé</Link>
+          <Link href="/hire">Hire</Link>
         </nav>
         <div className={s.tools}>
           <MotionToggle className={s.toggle} />

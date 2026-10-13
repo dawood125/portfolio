@@ -218,3 +218,20 @@ button {
 .name-char {
   font-weight: 620;
 }
+
+/* Print: paper becomes white, site chrome disappears (the résumé page is built to print). */
+@media print {
+  body {
+    background: #fff;
+    font-size: 11pt;
+  }
+  body::before,
+  [data-site-header],
+  .skip-link,
+  footer#contact {
+    display: none !important;
+  }
+  a {
+    color: inherit;
+  }
+}

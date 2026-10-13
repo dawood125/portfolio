@@ -2,6 +2,11 @@
   position: relative;
   padding-top: 76px; /* header height */
 }
+@media (max-width: 860px) {
+  .hero {
+    padding-top: 108px; /* header + nav row */
+  }
+}
 
 .grid {
   display: grid;

@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { codeProjects, liveSystems, profile } from "@/lib/content";
+import { codeProjects, profile, work } from "@/lib/content";
 import s from "./AskConsole.module.css";
 
 const STARTERS = [
@@ -23,19 +24,22 @@ type Run = {
   model?: string;
   attempts?: number;
   contextTokens?: number;
-  sources?: number;
+  retrieved?: string[];
 };
 
 type Source = { label: string; href: string; external?: boolean; image?: string; kind?: string };
 
 const sources: Record<string, Source> = {
   ...Object.fromEntries(
-    liveSystems.map((x) => [x.slug, { label: x.name, href: `#system-${x.slug}`, image: x.image, kind: `${x.kind} · live` }])
+    work.map((w) => [
+      w.slug,
+      { label: w.name, href: `/work/${w.slug}`, image: w.media.image, kind: `${w.kind}${w.status === "live" ? " · live" : ""}` },
+    ])
   ),
   ...Object.fromEntries(
     codeProjects.map((p) => [
       p.slug,
-      { label: p.name, href: "url" in p && p.url ? p.url : "#work", external: "url" in p && !!p.url, kind: p.stack.slice(0, 3).join(" · ") },
+      { label: p.name, href: "url" in p && p.url ? p.url : "/#work", external: "url" in p && !!p.url, kind: p.stack.slice(0, 3).join(" · ") },
     ])
   ),
   cv: { label: "CV", href: profile.cv, external: true, kind: "Career & credentials" },
@@ -113,7 +117,7 @@ function Pipeline({ run, now }: { run: Run; now: number }) {
     {
       label: "your browser → server",
       detail: run.contextTokens
-        ? `${run.sources} sources · ≈${(run.contextTokens / 1000).toFixed(1)}k tokens of context · whole corpus, no retrieval step`
+        ? `retrieved ${run.retrieved?.length ? run.retrieved.map((x) => sources[x]?.label ?? x).join(" + ") : "index only"} · ≈${(run.contextTokens / 1000).toFixed(1)}k tokens of context`
         : "question in flight",
       a: run.t0,
       b: run.headers != null ? run.t0 + (net ?? 0) : undefined,
@@ -210,7 +214,7 @@ export default function AskConsole() {
       r.modelMs = Number(res.headers.get("X-Model-Ms") ?? 0) || 0;
       r.attempts = Number(res.headers.get("X-Attempts") ?? 1);
       r.contextTokens = Number(res.headers.get("X-Context-Tokens") ?? 0) || undefined;
-      r.sources = Number(res.headers.get("X-Sources") ?? 0) || undefined;
+      r.retrieved = (res.headers.get("X-Retrieved") ?? "").split(",").filter(Boolean);
       setRun({ ...r });
       if (!res.ok || !res.body) {
         r.end = performance.now();
@@ -310,7 +314,7 @@ export default function AskConsole() {
                         const src = sources[slug];
                         return (
                           <li key={slug} style={{ animationDelay: `${i * 70}ms` }}>
-                            <a
+                            <Link
                               className={s.card}
                               href={src.href}
                               {...(src.external ? { target: "_blank", rel: "noopener" } : {})}
@@ -329,9 +333,9 @@ export default function AskConsole() {
                                 <span className="mono">{src.kind}</span>
                               </span>
                               <span aria-hidden="true" className={s.cardArrow}>
-                                {src.external ? "↗" : "↓"}
+                                {src.external ? "↗" : "→"}
                               </span>
-                            </a>
+                            </Link>
                           </li>
                         );
                       })}

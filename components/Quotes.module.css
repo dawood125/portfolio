@@ -1,0 +1,114 @@
+.section {
+  position: relative;
+  padding: clamp(40px, 6vh, 72px) 0 clamp(96px, 14vh, 150px);
+}
+.head {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  align-items: end;
+  margin-bottom: clamp(32px, 5vh, 56px);
+}
+.node {
+  position: absolute;
+  left: calc(var(--margin) * 0.45);
+  top: 0.55em;
+  width: calc(var(--margin) * 0.55 - 6px);
+  height: 1px;
+  background: var(--line);
+  transition: background var(--t-ui);
+}
+.node:global(.is-traced) {
+  background: var(--ink);
+}
+.title {
+  grid-column: 1 / 7;
+  font-size: clamp(3rem, 7.4vw, 7.25rem);
+  font-weight: 600;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+}
+.intro {
+  grid-column: 7 / 11;
+  color: var(--graphite);
+  max-width: 34ch;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr 1fr;
+  gap: var(--gutter);
+  align-items: stretch;
+}
+.quote {
+  position: relative;
+  margin: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 18px;
+  padding: 26px 26px 22px;
+  border: 1px solid var(--line);
+  background: rgb(255 255 255 / 0.28);
+  transition: border-color var(--t-ui), transform var(--t-ui) var(--ease-out);
+}
+.quote:hover {
+  border-color: var(--ink);
+  transform: translateY(-3px);
+}
+.mark {
+  font-size: 4.5rem;
+  line-height: 0.6;
+  height: 0.5em;
+  color: var(--signal);
+  font-weight: 500;
+}
+.quote blockquote {
+  margin: 0;
+}
+.quote p {
+  font-size: clamp(1.1875rem, 1.55vw, 1.5rem);
+  line-height: 1.32;
+  letter-spacing: -0.015em;
+}
+.quote:first-child p {
+  font-size: clamp(1.3125rem, 1.9vw, 1.875rem);
+}
+.quote figcaption {
+  display: grid;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.quote figcaption :global(.mono) {
+  font-size: 0.75rem;
+  color: var(--graphite);
+}
+.quote figcaption a {
+  justify-self: start;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  border-bottom: 1px solid var(--signal);
+}
+.quote figcaption a:hover {
+  color: var(--signal);
+}
+
+@media (max-width: 1023px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 900px) {
+  .head {
+    grid-template-columns: 1fr;
+    row-gap: 14px;
+  }
+  .title,
+  .intro {
+    grid-column: 1 / -1;
+  }
+  .node {
+    display: none;
+  }
+}
